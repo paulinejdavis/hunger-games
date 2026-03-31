@@ -1,0 +1,18 @@
+# Mac
+.DS_Store
+
+# Build
+target/
+
+# IDE
+.idea/
+.vscode/
+
+# Scala tooling
+.metals/
+
+# Logs
+logs/
+
+#OS
+Thumbs.db
