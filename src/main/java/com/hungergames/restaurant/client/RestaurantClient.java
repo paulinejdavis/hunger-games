@@ -18,7 +18,7 @@ public class RestaurantClient {
         this.restTemplate = builder.build();
     }
 
-    public Map<String, Object> getRestaurantsByPostcode(String postcode) {
+    public Map<?, ?> getRestaurantsByPostcode(String postcode) {
         return restTemplate.getForObject(API_URL, Map.class, postcode);
     }
 }
