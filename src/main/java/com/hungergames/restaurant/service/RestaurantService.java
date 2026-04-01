@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import com.hungergames.restaurant.client.RestaurantClient;
 import com.hungergames.restaurant.dto.RestaurantDto;
@@ -19,9 +20,13 @@ public class RestaurantService {
     }
 
     public List<RestaurantDto> getRestaurantsByPostcode(String postcode) {
-        Map<String, Object> response = restaurantClient.getRestaurantsByPostcode(postcode);
+        Map<?, ?> response;
 
-        
+        try {
+            response = restaurantClient.getRestaurantsByPostcode(postcode);
+        } catch (RestClientException | IllegalArgumentException ex) {
+            return List.of();
+        }
 
         if (response == null) {
             return List.of();
@@ -34,13 +39,13 @@ public class RestaurantService {
 
         return restaurantsList.stream()
                 .filter(Map.class::isInstance)
-                .map(r -> (Map<String, Object>) r)
+                .map(r -> (Map<?, ?>) r)
                 .limit(10)
                 .map(this::toRestaurantDto)
                 .toList();
     }
 
-    private RestaurantDto toRestaurantDto(Map<String, Object> restaurant) {
+    private RestaurantDto toRestaurantDto(Map<?, ?> restaurant) {
         String name = getString(restaurant.get("name"));
         String cuisines = extractCuisines(restaurant);
         Double rating = extractRating(restaurant);
@@ -48,7 +53,7 @@ public class RestaurantService {
         return new RestaurantDto(name, cuisines, rating);
     }
 
-    private String extractCuisines(Map<String, Object> restaurant) {
+    private String extractCuisines(Map<?, ?> restaurant) {
         Object cuisinesObject = restaurant.get("cuisines");
 
         if (!(cuisinesObject instanceof List<?> cuisinesList)) {
@@ -57,13 +62,13 @@ public class RestaurantService {
 
         return cuisinesList.stream()
                 .filter(Map.class::isInstance)
-                .map(c -> (Map<String, Object>) c)
+                .map(c -> (Map<?, ?>) c)
                 .map(cuisine -> getString(cuisine.get("name")))
                 .filter(name -> !name.isBlank())
                 .collect(Collectors.joining(", "));
     }
 
-    private Double extractRating(Map<String, Object> restaurant) {
+    private Double extractRating(Map<?, ?> restaurant) {
         Object ratingObject = restaurant.get("rating");
 
         if (!(ratingObject instanceof Map<?, ?> ratingMap)) {
