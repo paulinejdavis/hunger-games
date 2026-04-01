@@ -41,6 +41,23 @@ CYGWIN* | MINGW*)
   ;;
 esac
 
+# macOS fallback: pick Homebrew OpenJDK if shell startup files were not loaded.
+if [ "$(uname)" = "Darwin" ] && [ -z "${JAVA_HOME-}" ]; then
+  for candidate in \
+    /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home \
+    /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home \
+    /usr/local/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home \
+    /usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+  do
+    if [ -x "$candidate/bin/java" ] && [ -x "$candidate/bin/javac" ]; then
+      JAVA_HOME="$candidate"
+      PATH="$JAVA_HOME/bin:$PATH"
+      export JAVA_HOME PATH
+      break
+    fi
+  done
+fi
+
 # set JAVACMD and JAVACCMD
 set_java_home() {
   # For Cygwin and MinGW, ensure paths are in Unix format before anything is touched
