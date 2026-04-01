@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitchen Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --je-orange: #f47b00;
+      --ink: #1f2430;
+      --muted: #6b7280;
+      --line: #dde3eb;
+      --surface: #ffffff;
+      --bg: #e9edf2;
+      --accent: #2b67d0;
+      --selected: #f08a2d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Jet Sans", "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 15% 10%, #f9fafc 0%, #edf1f6 55%, #e6ebf1 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .tablet {
+      width: min(1280px, 100%);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 6px solid #0f1115;
+      box-shadow: 0 20px 50px rgba(16, 24, 40, 0.2);
+      background: var(--surface);
+    }
+
+    .tablet-top {
+      height: 14px;
+      background: #0f1115;
+    }
+
+    .app {
+      min-height: 76vh;
+      display: grid;
+      grid-template-columns: 112px 1fr;
+    }
+
+    .rail {
+      background: var(--je-orange);
+      color: #fff;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .rail .menu {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      padding: 10px 8px;
+    }
+
+    .stat {
+      background: #fff;
+      color: #1f2430;
+      border-radius: 10px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .stat .num {
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .stat .label {
+      font-size: 12px;
+      margin-top: 3px;
+      color: #444d5b;
+    }
+
+    .content {
+      padding: 0;
+      background: #f8fafc;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 16px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 280px;
+      align-items: center;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toolbar input {
+      width: 100%;
+      font-size: 15px;
+      border: 1px solid #cfd8e3;
+      border-radius: 9px;
+      padding: 9px 11px;
+      outline: none;
+      background: #fff;
+    }
+
+    .toolbar input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .toolbar button {
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 14px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .toolbar button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .summary {
+      font-size: 14px;
+      color: #3f4b5d;
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .status {
+      margin: 8px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 20px;
+    }
+
+    .results {
+      margin: 0;
+      padding: 0 10px 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid rgba(244, 123, 0, 0.38);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      box-shadow: inset 0 0 0 1px rgba(244, 123, 0, 0.08);
+    }
+
+    .card.is-selected {
+      border-color: var(--selected);
+      box-shadow: inset 0 0 0 2px rgba(240, 138, 45, 0.5);
+    }
+
+    .queue {
+      border-right: 1px solid var(--line);
+      padding-right: 8px;
+      text-align: center;
+    }
+
+    .queue .num {
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 800;
+      color: #202430;
+    }
+
+
+    .name {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 0;
+      line-height: 1;
+      letter-spacing: 0.2px;
+    }
+
+    .meta {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .right {
+      text-align: right;
+      min-width: 90px;
+    }
+
+    .rating {
+      font-weight: 800;
+      color: #111827;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .tag {
+      margin-top: 5px;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #2f3a4d;
+      background: #f0f4fa;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .empty {
+      padding: 20px;
+      text-align: center;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      color: var(--muted);
+      background: #fff;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 10px;
+      }
+
+      .tablet {
+        border-width: 3px;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .rail {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+
+      .rail h1 {
+        grid-column: 1 / -1;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .summary {
+        text-align: left;
+      }
+
+      .card {
+        grid-template-columns: 1fr;
+      }
+
+      .right {
+        text-align: left;
+      }
+
+      .name {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tablet">
+    <div class="tablet-top"></div>
+    <div class="app">
+      <aside class="rail">
+        <div class="menu">Top Spots</div>
+        <div class="stat">
+          <div class="num" id="countTotal">0</div>
+          <div class="label">Top 10</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="countRated">0</div>
+          <div class="label">Avg rating</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="countCuisines">0</div>
+          <div class="label">Cuisine types</div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="topbar">
+          <form id="searchForm" class="toolbar">
+            <input id="postcodeInput" type="text" placeholder="Enter postcode (e.g. EC4M 7RF)" value="EC4M 7RF" aria-label="Postcode">
+            <button id="searchBtn" type="submit">Find</button>
+          </form>
+          <div id="summary" class="summary">Kitchen board</div>
+        </div>
+
+        <div id="status" class="status">Enter a postcode and fetch restaurants.</div>
+        <section id="results" class="results"></section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("searchForm");
+    const input = document.getElementById("postcodeInput");
+    const button = document.getElementById("searchBtn");
+    const statusEl = document.getElementById("status");
+    const summaryEl = document.getElementById("summary");
+    const resultsEl = document.getElementById("results");
+
+    const countTotal = document.getElementById("countTotal");
+    const countRated = document.getElementById("countRated");
+    const countCuisines = document.getElementById("countCuisines");
+
+    function setLoading(isLoading) {
+      button.disabled = isLoading;
+      button.textContent = isLoading ? "Loading..." : "Find";
+    }
+
+    function updateStats(restaurants) {
+      const rated = restaurants.filter((r) => r.rating !== null && r.rating !== undefined);
+      const averageRating = rated.length === 0
+        ? 0
+        : rated.reduce((sum, restaurant) => sum + Number(restaurant.rating), 0) / rated.length;
+
+      const cuisineTypes = new Set(
+        restaurants
+          .flatMap((r) => (r.cuisines || "").split(","))
+          .map((c) => c.trim())
+          .filter((c) => c.length > 0)
+      );
+
+      countTotal.textContent = String(restaurants.length);
+      countRated.textContent = averageRating === 0 ? "0" : averageRating.toFixed(1);
+      countCuisines.textContent = String(cuisineTypes.size);
+    }
+
+    function renderRestaurants(restaurants, postcode) {
+      resultsEl.innerHTML = "";
+
+      if (restaurants.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No restaurants found for this postcode.";
+        resultsEl.appendChild(empty);
+        return;
+      }
+
+      restaurants.forEach((restaurant, index) => {
+        const hasRating = restaurant.rating !== null && restaurant.rating !== undefined;
+        const card = document.createElement("article");
+        card.className = `card${hasRating && Number(restaurant.rating) >= 4.5 ? " is-selected" : ""}`;
+
+        const queue = document.createElement("div");
+        queue.className = "queue";
+        queue.innerHTML = `<div class="num">${index + 1}</div>`;
+
+        const details = document.createElement("div");
+        const title = document.createElement("h2");
+        title.className = "name";
+        title.textContent = restaurant.name || "Unnamed restaurant";
+
+        const cuisines = document.createElement("p");
+        cuisines.className = "meta";
+        cuisines.textContent = restaurant.cuisines || "No cuisines listed";
+
+        details.appendChild(title);
+        details.appendChild(cuisines);
+
+        const right = document.createElement("div");
+        right.className = "right";
+
+        const rating = document.createElement("div");
+        rating.className = "rating";
+        rating.textContent = hasRating ? Number(restaurant.rating).toFixed(1) : "—";
+
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        if (!hasRating) {
+          tag.textContent = "No rating";
+        } else if (Number(restaurant.rating) >= 4.5) {
+          tag.textContent = "Top rated";
+        } else if (Number(restaurant.rating) >= 4.0) {
+          tag.textContent = "Highly rated";
+        } else {
+          tag.textContent = "Rated";
+        }
+
+        right.appendChild(rating);
+        right.appendChild(tag);
+
+        card.appendChild(queue);
+        card.appendChild(details);
+        card.appendChild(right);
+        resultsEl.appendChild(card);
+      });
+    }
+
+    async function searchRestaurants(postcode) {
+      setLoading(true);
+      statusEl.textContent = "Fetching restaurants...";
+
+      try {
+        const response = await fetch(`/restaurants/${encodeURIComponent(postcode)}`);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const restaurants = await response.json();
+        updateStats(restaurants);
+        renderRestaurants(restaurants, postcode);
+        summaryEl.textContent = `${restaurants.length} total for ${postcode.toUpperCase()}`;
+        statusEl.textContent = `Showing ${restaurants.length} restaurant(s) for ${postcode}.`;
+      } catch (error) {
+        updateStats([]);
+        resultsEl.innerHTML = "";
+        summaryEl.textContent = "Kitchen board";
+        statusEl.textContent = "Could not load restaurants right now. Please try again.";
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const postcode = input.value.trim();
+
+      if (!postcode) {
+        statusEl.textContent = "Please enter a postcode.";
+        return;
+      }
+
+      searchRestaurants(postcode);
+    });
+  </script>
+</body>
+</html>
